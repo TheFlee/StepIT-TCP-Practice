@@ -41,7 +41,7 @@ while (true)
                 var car = db.Cars.FirstOrDefault(c => c.Id == newCar!.Id);
                 if (car != null)
                 {
-                    car.Brand = newCar.Brand;
+                    car.Brand = newCar!.Brand;
                     car.Model = newCar.Model;
                     car.Year = newCar.Year;
                     db.SaveChanges();
