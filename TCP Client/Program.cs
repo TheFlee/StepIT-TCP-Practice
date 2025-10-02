@@ -38,7 +38,7 @@ while (true)
     {
         case Command.Get:
             Console.Clear();
-            command = new Command { Text = Command.Get };
+            command = new Command { Method = Command.Get };
             bw.Write(JsonSerializer.Serialize(command));
             response = br.ReadString();
             var cars = JsonSerializer.Deserialize<List<Car>>(response);
@@ -49,30 +49,28 @@ while (true)
         case Command.Post:
             Console.Clear();
             var newCar = new Car { Brand = input[1], Model = input[2], Year = int.Parse(input[3]) };
-            command = new Command { Text = Command.Post, Param = JsonSerializer.Serialize(newCar) };
+            command = new Command { Method = Command.Post, Car = newCar };
             bw.Write(JsonSerializer.Serialize(command));
             response = br.ReadString();
             Console.WriteLine(response);
-            Console.WriteLine("Press any key to continue!");
             Console.ReadLine();
             break;
         case Command.Put:
             Console.Clear();
             var updateCar = new Car { Id = int.Parse(input[1]), Brand = input[2], Model = input[3], Year = int.Parse(input[4]) };
-            command = new Command { Text = Command.Put, Param = JsonSerializer.Serialize(updateCar) };
+            command = new Command { Method = Command.Put, Car = updateCar };
             bw.Write(JsonSerializer.Serialize(command));
             response = br.ReadString();
             Console.WriteLine(response);
-            Console.WriteLine("Press any key to continue!");
             Console.ReadLine();
             break;
         case Command.Delete:
             Console.Clear();
-            command = new Command { Text = Command.Delete, Param = input[1] };
+            var deleteCar = new Car { Id = int.Parse(input[1]) };
+            command = new Command { Method = Command.Delete, Car = deleteCar };
             bw.Write(JsonSerializer.Serialize(command));
             response = br.ReadString();
             Console.WriteLine(response);
-            Console.WriteLine("Press any key to continue!");
             Console.ReadLine();
             break;
     }

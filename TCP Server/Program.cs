@@ -9,6 +9,8 @@ var port = 27001;
 var listener = new TcpListener(ip, port);
 listener.Start();
 
+using var db = new CarContext();
+
 while (true)
 {
     var client = listener.AcceptTcpClient();
@@ -16,55 +18,61 @@ while (true)
     var bw = new BinaryWriter(stream);
     var br = new BinaryReader(stream);
 
-    using var db = new CarContext();
-
     while (true)
     {
         var input = br.ReadString();
         Console.WriteLine(input);
         var command = JsonSerializer.Deserialize<Command>(input);
 
-        switch (command!.Text)
+        switch (command!.Method)
         {
             case Command.Get:
-                var allCars = db.Cars.ToList();
-                bw.Write(JsonSerializer.Serialize(allCars));
+                bw.Write(GetMethod());
                 break;
             case Command.Post:
-                var newCar = JsonSerializer.Deserialize<Car>(command.Param!);
-                db.Cars.Add(newCar!);
-                db.SaveChanges();
-                bw.Write("Car added");
+                bw.Write(PostMethod(command.Car!));
                 break;
             case Command.Put:
-                newCar = JsonSerializer.Deserialize<Car>(command.Param!);
-                var car = db.Cars.FirstOrDefault(c => c.Id == newCar!.Id);
-                if (car != null)
-                {
-                    car.Brand = newCar!.Brand;
-                    car.Model = newCar.Model;
-                    car.Year = newCar.Year;
-                    db.SaveChanges();
-                    bw.Write("Car updated");
-                }
-                else
-                {
-                    bw.Write("Car not found");
-                }
+                bw.Write(PutMethod(command.Car!));
                 break;
             case Command.Delete:
-                car = db.Cars.FirstOrDefault(c => c.Id == int.Parse(command.Param!));
-                if (car != null)
-                {
-                    db.Cars.Remove(car);
-                    db.SaveChanges();
-                    bw.Write("Car deleted");
-                }
-                else
-                {
-                    bw.Write("Car not found");
-                }
+                bw.Write(DeleteMethod(command.Car!));
                 break;
         }
     }
+}
+
+string GetMethod()
+{
+    var allCars = db.Cars.ToList();
+    return JsonSerializer.Serialize(allCars);
+}
+
+string PostMethod(Car car)
+{
+    db.Cars.Add(car);
+    db.SaveChanges();
+    return "Car added";
+}
+
+string PutMethod(Car carUpd)
+{
+    var car = db.Cars.FirstOrDefault(c => c.Id == carUpd.Id);
+    if (car == null) return "Car not found";
+
+    car.Brand = carUpd.Brand;
+    car.Model = carUpd.Model;
+    car.Year = carUpd.Year;
+    db.SaveChanges();
+    return "Car updated";
+}
+
+string DeleteMethod(Car car)
+{
+    var carDel = db.Cars.FirstOrDefault(c => c.Id == car.Id);
+    if (carDel == null) return "Car not found";
+
+    db.Cars.Remove(carDel);
+    db.SaveChanges();
+    return "Car deleted";
 }
