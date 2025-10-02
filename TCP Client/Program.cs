@@ -53,6 +53,7 @@ while (true)
             bw.Write(JsonSerializer.Serialize(command));
             response = br.ReadString();
             Console.WriteLine(response);
+            Console.WriteLine("Press any key to continue!");
             Console.ReadLine();
             break;
         case Command.Put:
@@ -62,6 +63,7 @@ while (true)
             bw.Write(JsonSerializer.Serialize(command));
             response = br.ReadString();
             Console.WriteLine(response);
+            Console.WriteLine("Press any key to continue!");
             Console.ReadLine();
             break;
         case Command.Delete:
@@ -71,6 +73,7 @@ while (true)
             bw.Write(JsonSerializer.Serialize(command));
             response = br.ReadString();
             Console.WriteLine(response);
+            Console.WriteLine("Press any key to continue!");
             Console.ReadLine();
             break;
     }
