@@ -34,7 +34,7 @@ while (true)
                 var newCar = JsonSerializer.Deserialize<Car>(command.Param!);
                 db.Cars.Add(newCar!);
                 db.SaveChanges();
-                bw.Write($"Car added");
+                bw.Write("Car added");
                 break;
             case Command.Put:
                 newCar = JsonSerializer.Deserialize<Car>(command.Param!);
