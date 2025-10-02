@@ -53,19 +53,16 @@ while (true)
                 }
                 break;
             case Command.Delete:
-                if (int.TryParse(command.Param, out int id))
+                car = db.Cars.FirstOrDefault(c => c.Id == int.Parse(command.Param!));
+                if (car != null)
                 {
-                    car = db.Cars.FirstOrDefault(c => c.Id == id);
-                    if (car != null)
-                    {
-                        db.Cars.Remove(car);
-                        db.SaveChanges();
-                        bw.Write("Car deleted");
-                    }
-                    else
-                    {
-                        bw.Write("Car not found");
-                    }
+                    db.Cars.Remove(car);
+                    db.SaveChanges();
+                    bw.Write("Car deleted");
+                }
+                else
+                {
+                    bw.Write("Car not found");
                 }
                 break;
         }
